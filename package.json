@@ -1,0 +1,27 @@
+{
+  "name": "dockmaster-api",
+  "version": "0.0.0",
+  "main": "lib/dockmaster-api.js",
+  "description": "A RESTful node.js wrapper for the DockMaster API",
+  "homepage": "https://github.com/excellenteasy/dockmaster-api",
+  "bugs": "https://github.com/excellenteasy/dockmaster-api/issues",
+  "author": {
+    "name": "David Pfahler",
+    "email": "david@excellenteasy.com",
+    "url": "http://excellenteasy.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/excellenteasy/dockmaster-api"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.0"
+  }
+}
