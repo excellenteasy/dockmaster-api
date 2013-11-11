@@ -8,17 +8,16 @@ class DataParser
     keys = _.keys(data)
     if _.isObject(data) and not _.isArray data
       if keys.length is 1
-	return unwrap data[_.keys(data)?[0]]
+        return unwrap data[_.keys(data)?[0]]
       else
-	_.each keys, (key) ->
-	  if _.isObject(data[key]) or _.isArray(data[key])
-	    data[key] = unwrap data[key]
-	return data
-
+        _.each keys, (key) ->
+          if _.isObject(data[key]) or _.isArray(data[key])
+            data[key] = unwrap data[key]
+        return data
     else if _.isArray data
       result = []
       _.each data, (item) ->
-	result.push unwrap item
+        result.push unwrap item
       return result
 
   parse: (data) -> data = unwrap data
