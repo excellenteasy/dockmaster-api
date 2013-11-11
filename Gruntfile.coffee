@@ -1,46 +1,88 @@
 "use strict"
+
 module.exports = (grunt) ->
 
-  # Project configuration.
+  require("load-grunt-tasks") grunt
+  require("time-grunt") grunt
+
   grunt.initConfig
-    coffee:
-      src: 'api.coffee'
-      dest: 'api.js'
+    yeoman:
+      app: 'src'
+      dist: 'lib'
+      test: 'test'
+      testTmp: 'test-tmp'
 
     nodeunit:
-      files: ["test/**/*_test.js"]
-
-    jshint:
-      options:
-        jshintrc: ".jshintrc"
-
-      gruntfile:
-        src: "Gruntfile.js"
-
-      lib:
-        src: ["lib/**/*.js"]
-
-      test:
-        src: ["test/**/*.js"]
+      files: ['<%= yeoman.testTmp %>/{,*/}*.js']
 
     watch:
-      gruntfile:
-        files: "<%= jshint.gruntfile.src %>"
-        tasks: ["jshint:gruntfile"]
+      coffee:
+	files: ['<%= yeoman.app %>/{,*/}*.coffee']
+	tasks: ['coffee:dist']
 
-      lib:
-        files: "<%= jshint.lib.src %>"
-        tasks: ["jshint:lib", "nodeunit"]
+    clean:
+      dist: src: ['<%= yeoman.dist %>/*']
+      test: src: ['<%= yeoman.testTmp %>/*']
+
+    coffeelint:
+      options:
+	no_empty_param_list:
+	  level: 'error'
+	no_stand_alone_at:
+	  level: 'error'
+      src:
+	files: src: ['<%= yeoman.app %>/{,*/}*.coffee']
+	max_line_length:
+	  value: 79
+	  level: 'error'
+      test:
+	files: src: ['<%= yeoman.test %>/{,*/}*.coffee']
+	max_line_length:
+	  value: 79
+	  level: 'error'
+      gruntfile:
+	files: src: ['Gruntfile.coffee']
+
+    coffee:
+      options:
+	sourceMap: true
+	sourceRoot: ''
+
+      dist:
+	files: [
+	  expand: true
+	  cwd: '<%= yeoman.app %>'
+	  src: '{,*/}*.coffee'
+	  dest: '<%= yeoman.dist %>'
+	  ext: '.js'
+	]
 
       test:
-        files: "<%= jshint.test.src %>"
-        tasks: ["jshint:test", "nodeunit"]
+	files: [
+	  expand: true
+	  cwd: '<%= yeoman.test %>'
+	  src: '{,*/}*.coffee'
+	  dest: '<%= yeoman.testTmp %>'
+	  ext: '.js'
+	]
 
+    shell:
+      options:
+	stderr : true
+	stdout : true
+	failOnError : true
+      semver:
+	command: './node_modules/semver-sync/bin/semver-sync -v'
+      hooks:
+	command: 'cp -R ./hooks ./.git/'
 
-  # These plugins provide necessary tasks.
-  grunt.loadNpmTasks "grunt-contrib-nodeunit"
-  grunt.loadNpmTasks "grunt-contrib-jshint"
-  grunt.loadNpmTasks "grunt-contrib-watch"
-
-  # Default task.
-  grunt.registerTask "default", ["jshint", "nodeunit"]
+  grunt.registerTask 'precommit', ['shell:semver', 'coffeelint']
+  grunt.registerTask 'default', [
+    'shell:hooks'
+    'coffeelint'
+    'clean'
+    'coffee'
+    'nodeunit'
+    'watch'
+  ]
+  grunt.registerTask 'test', ['coffee', 'nodeunit']
