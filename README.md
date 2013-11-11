@@ -2,12 +2,14 @@
 
 A RESTful node.js wrapper for the DockMaster API
 
+**NOTE**: Project in is the process of being developed. This should not be used in production.
+
 ## Getting Started
 Install the module with: `npm install dockmaster-api`
 
-```javascript
-var dockmaster-api = require('dockmaster-api');
-dockmaster-api.awesome(); // "awesome"
+To start the server:
+```shell
+node ./lib/api.js`
 ```
 
 ## Documentation
@@ -16,11 +18,5 @@ _(Coming soon)_
 ## Examples
 _(Coming soon)_
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
-
 ## License
-Copyright (c) 2013 David Pfahler. Licensed under the MIT license.
+Copyright (c) 2013 excellenteasy. Licensed under the MIT license.
