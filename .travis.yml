@@ -4,3 +4,5 @@ node_js:
   - '0.10'
 notifications:
   email: false
+  hipchat:
+    secure: "Tk19a2iJHOp8LBKXqtV5oyIjxB4OJIGGaUMljCvZ1iOrnYre1tdKpLEFl01H3wWw7dy0D566NWOWHKbrx0pK9i7etwWJWUPUh18Kd3hq5WoNIoyn/q6kUGbGuz+OYrJoGRFLyrbdm+8RuPTHYuZx9q6OqKKS1SOeUegHi/psYBE="
