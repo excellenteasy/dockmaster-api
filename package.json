@@ -20,8 +20,8 @@
     }
   ],
   "scripts": {
-    "build": "coffee --bare --compile --output lib/dockmaster-api src/*.coffee",
-    "prepublish": "coffee --bare --compile --output lib/dockmaster-api src/*.coffee",
+    "build": "./node_modules/coffee-script/bin/coffee --bare --compile --output lib/dockmaster-api src/*.coffee",
+    "prepublish": "./node_modules/coffee-script/bin/coffee --bare --compile --output lib/dockmaster-api src/*.coffee",
     "postpublish": "rm -rf html man7 lib",
     "test": "grunt test"
   },
