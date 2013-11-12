@@ -7,20 +7,19 @@ module.exports =
       'content-type': 'application/json'
       'connection': 'keep-alive'
       'accept': '*/*'
+    params: "{}"
   routes:
     '/workorders':
       GET:
         soapMethod: 'RetrieveWorkOrders'
         params: JSON.stringify {"LastUpdateDate": "", "LastUpdateTime": ""}
-    '/workorders/:id':
-      GET:
-        soapMethod: 'RetrieveWorkOrders'
-        params: JSON.stringify {"LastUpdateDate": "", "LastUpdateTime": ""}
-    '/prospects':
-      GET:
-        soapMethod: 'RetrieveNewLeads'
-        params: JSON.stringify {"NumberToRetrieve": "1"}
     '/customers':
       GET:
         soapMethod: 'RetrieveAllCustomers'
         params: JSON.stringify {"LastModifiedDate": ""}
+    '/customerNames':
+      GET:
+        soapMethod: 'GetCustomerList'
+    '/vendors':
+      GET:
+        soapMethod: 'GetVendorList'

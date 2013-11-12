@@ -4,12 +4,14 @@
 express = require 'express'
 dockMaster = require '../lib/dockMaster'
 _ = require 'lodash'
+endpoints = require '../lib/endpointsConfig'
 # END Dependencies
 
 # Prevent server from going down by unexpected errors
 process.on 'uncaughtException', (err) ->
   console.log '>>> uncaught exception !', err
   console.log err.stack
+  process.exit 1
 
 app = express()
 app.set 'name', 'DockMaster REST API'
@@ -23,10 +25,8 @@ app.use (req, res, next) ->
   res.header 'Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS'
   next()
 
-app.get '/workorders', dockMaster.config, dockMaster.request
-app.get '/workorders/:id', dockMaster.config, dockMaster.request
-app.get '/prospects', dockMaster.config, dockMaster.request
-app.get '/customers', dockMaster.config, dockMaster.request
+_.keys(endpoints.routes).forEach (route) ->
+  app.get route, dockMaster.config, dockMaster.request
 
 app.listen (port = 1338), ->
   console.log '%s listening at %s', app.get('name'), port
