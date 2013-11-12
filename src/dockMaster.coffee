@@ -20,6 +20,7 @@ class DockMaster
       extRes.on 'end', ->
         result = parser.parse result
         if result instanceof Error
+          console.error result
           res.statusCode = 500
           res.write result.message
           res.end()
