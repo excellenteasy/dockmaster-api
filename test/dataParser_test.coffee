@@ -25,7 +25,7 @@ parser = require '../lib/dataParser'
 exports['parser'] =
   'workorders': (test) ->
     test.expect 1
-    actual = JSON.stringify parser.parse rawWorkorders
-    expected = JSON.stringify parsedWorkorders
+    actual = parser.parse rawWorkorders
+    expected = parsedWorkorders
     test.deepEqual actual, expected, 'Workorders parsed correctly'
     test.done()
