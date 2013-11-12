@@ -1,59 +1,32 @@
 'use strict'
 
 # START Dependencies
-restify = require 'restify'
-http = require 'http'
-preflighter = require 'se7ensky-restify-preflight'
-api = require './api'
+express = require 'express'
+dockMaster = require '../lib/dockMaster'
+_ = require 'lodash'
 # END Dependencies
 
-server = restify.createServer
-  name: 'DockMaster REST API'
-  version: '0.0.0'
+# Prevent server from going down by unexpected errors
+process.on 'uncaughtException', (err) ->
+  console.log '>>> uncaught exception !', err
+  console.log err.stack
 
-# add preflight (OPTIONS) support via 'se7ensky-restify-preflight'
-preflighter server
+app = express()
+app.set 'name', 'DockMaster REST API'
+app.set 'version', '0.0.0'
 
-server.use (req, res, next) ->
+app.use express.logger()
+
+app.use (req, res, next) ->
   res.header 'Access-Control-Allow-Origin', '*'
   res.header 'Access-Control-Allow-Headers', 'X-Requested-With'
   res.header 'Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS'
   next()
 
-server.get '/workorders', (req, res, next) ->
-  body = JSON.stringify {"LastUpdateDate":"","LastUpdateTime":""}
-  extReq = http.request
-    hostname: 'api.dockmaster.com'
-    port: 3100
-    path: '/DB2Web.asmx/RetrieveWorkOrdersJSON'
-    method: 'POST'
-    headers:
-      'content-type': 'application/json'
-      'content-length': body.length+''
-      'connection': 'keep-alive'
-      'accept': '*/*'
-  , (extRes) ->
-    responseData = ''
-    console.log 'STATUS: ' + extRes.statusCode
-    console.log 'HEADERS: ' + JSON.stringify(extRes.headers)
-    extRes.setEncoding 'utf8'
-    extRes.on 'error', (e) ->
-      console.log "ERROR: #{e.message}"
-    extRes.on 'data', (chunk) ->
-      console.log "CHUNK: #{chunk}"
-      responseData += chunk
-    extRes.on 'end', ->
-      responseData = api.parse responseData
-      res.statusCode = 200
-      res.end(responseData)
+app.get '/workorders', dockMaster.config, dockMaster.request
+app.get '/workorders/:id', dockMaster.config, dockMaster.request
+app.get '/prospects', dockMaster.config, dockMaster.request
+app.get '/customers', dockMaster.config, dockMaster.request
 
-  extReq.on 'error', (e) ->
-    console.log "ERROR EXTREQ: #{e.message}"
-
-  extReq.write body
-  extReq.end()
-
-server.pre restify.pre.userAgentConnection()
-
-server.listen 1338, ->
-  console.log '%s listening at %s', server.name, server.url
+app.listen (port = 1338), ->
+  console.log '%s listening at %s', app.get('name'), port

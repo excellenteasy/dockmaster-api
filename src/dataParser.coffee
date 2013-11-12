@@ -20,6 +20,35 @@ class DataParser
         result.push unwrap item
       return result
 
-  parse: (data) -> data = unwrap data
+  parse: (data) ->
+    if /{"Message":"There was an error processing the request."/.test data
+      return new Error 'request processing failed, API error'
+
+    try
+      data = JSON.parse data
+    catch e
+      return new Error "unable to parse initial response"
+
+    # We begin to untangle the mess that is returned by the API
+    data = data.d
+    # If the response is empty, it will look something like '{"workorders":}'.
+    # In that case, we need to return an empty object or array.
+    if /^\{\"[a-zA-Z]+\"\:\}$/.test data
+      # TODO: allow for other empty types like {} or "", depending on endpoint
+      data = []
+    # When the response does carry data, sometimes JSON.parse works, sometimes
+    # not. Hence, we need try and if it fails continue untangling the
+    # "custom JSON" (=invalid JSON) that was sent.
+    else
+      try
+        data = JSON.parse data
+      catch e
+        try
+          data = eval("(function(){return #{data}})")()
+        catch err
+          data = new Error 'unable to parse the response'
+
+    # Now, we can unwrap the parsed data
+    unwrap data
 
 module.exports = new DataParser
