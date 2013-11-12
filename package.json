@@ -19,6 +19,10 @@
       "type": "MIT"
     }
   ],
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.3.x"
+  },
   "scripts": {
     "build": "./node_modules/coffee-script/bin/coffee --bare --compile --output lib/dockmaster-api src/*.coffee",
     "prepublish": "./node_modules/coffee-script/bin/coffee --bare --compile --output lib/dockmaster-api src/*.coffee",
