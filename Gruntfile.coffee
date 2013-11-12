@@ -45,8 +45,8 @@ module.exports = (grunt) ->
 
     coffee:
       options:
-        sourceMap: true
-        sourceRoot: ''
+	sourceMap: yes
+	sourceRoot: '../src/'
 
       dist:
         files: [
