@@ -45,12 +45,12 @@ module.exports = (grunt) ->
 
     coffee:
       options:
-	sourceMap: yes
-	sourceRoot: '../src/'
+        sourceMap: yes
+        sourceRoot: '../src/'
 
       dist:
         files: [
-          expand: true
+          expand: yes
           cwd: '<%= yeoman.app %>'
           src: '{,*/}*.coffee'
           dest: '<%= yeoman.dist %>'
@@ -59,7 +59,7 @@ module.exports = (grunt) ->
 
       test:
         files: [
-          expand: true
+          expand: yes
           cwd: '<%= yeoman.test %>'
           src: '{,*/}*.coffee'
           dest: '<%= yeoman.testTmp %>'
@@ -68,21 +68,23 @@ module.exports = (grunt) ->
 
     shell:
       options:
-        stderr : true
-        stdout : true
-        failOnError : true
+        stderr : yes
+        stdout : yes
+        failOnError : yes
       semver:
         command: './node_modules/semver-sync/bin/semver-sync -v'
       hooks:
         command: 'cp -R ./hooks ./.git/'
+      server:
+        command: 'node ./lib/api.js'
 
   grunt.registerTask 'precommit', ['shell:semver', 'coffeelint']
-  grunt.registerTask 'default', [
-    'shell:hooks'
+  grunt.registerTask '_build', [
     'coffeelint'
     'clean'
     'coffee'
     'nodeunit'
-    'watch'
   ]
+  grunt.registerTask 'default', ['shell:hooks', '_build', 'watch']
   grunt.registerTask 'test', ['coffee', 'nodeunit']
+  grunt.registerTask 'server', ['_build', 'shell:server']
