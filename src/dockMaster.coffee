@@ -58,7 +58,7 @@ class DockMaster
       if _.isNumber options.headers['content-length']
         options.headers['content-length'] += ''
       else
-        options.headers['content-length'] = options.params.length+''
+        options.headers['content-length'] = options.params.length
 
     httpOptions =
       hostname: options.hostname
@@ -68,8 +68,10 @@ class DockMaster
       headers: options.headers
 
     extReq = http.request httpOptions, createResponseHandler(req, res, next)
-    extReq.on('error', (e) -> console.log "ERROR EXTREQ: #{e.message}")
-    extReq.write(options.params)
+    extReq.on 'error', (e) ->
+      console.error "ERROR EXTREQ: #{e.message}"
+      console.error e
+    extReq.write options.params
     extReq.end()
 
 module.exports = new DockMaster

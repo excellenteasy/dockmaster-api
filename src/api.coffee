@@ -18,6 +18,8 @@ app.set 'name', 'DockMaster REST API'
 app.set 'version', '0.0.0'
 
 app.use express.logger()
+app.use express.json()
+app.use express.urlencoded()
 
 app.use (req, res, next) ->
   res.header 'Access-Control-Allow-Origin', '*'

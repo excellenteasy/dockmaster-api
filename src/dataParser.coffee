@@ -21,13 +21,17 @@ class DataParser
       return result
 
   parse: (data) ->
-    if /{"Message":"There was an error processing the request."/.test data
-      return new Error 'request processing failed, API error'
+    # capture erros returned form the DockMaster API
+    regex = /\{"Message":"(.+)"\}/
+    if capture = data.match regex
+      return new Error capture[1]
 
     try
       data = JSON.parse data
     catch e
-      return new Error "unable to parse initial response"
+      console.error e
+      console.log "initial response: #{data}"
+      return new Error "unable to parse initial response: "
 
     # We begin to untangle the mess that is returned by the API
     data = data.d
