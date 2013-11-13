@@ -1,9 +1,10 @@
 module.exports =
   defaults:
     hostname: 'api.dockmaster.com'
-    port: 3105
+    port: 3100
     httpMethod: 'POST'
     headers:
+      # 'content-type': 'application/x-www-form-urlencoded'
       'content-type': 'application/json'
       'connection': 'keep-alive'
       'accept': '*/*'
@@ -23,3 +24,7 @@ module.exports =
     '/vendors':
       GET:
         soapMethod: 'GetVendorList'
+    '/prospects':
+      GET:
+        soapMethod: 'RetrieveLeads'
+        params: JSON.stringify {"LastUpdateDate": "", "ClerkId": ""}
