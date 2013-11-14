@@ -1,7 +1,7 @@
 module.exports =
   defaults:
     hostname: 'api.dockmaster.com'
-    port: 3100
+    port: 3105
     httpMethod: 'POST'
     headers:
       # 'content-type': 'application/x-www-form-urlencoded'

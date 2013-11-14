@@ -42,6 +42,11 @@ class DockMaster
     for opt in ['hostname', 'port', 'httpMethod', 'soapMethod', 'params']
       config[opt] = req.param(opt) or conf[opt] or endpoints.defaults[opt]
 
+    # custom modifications per route
+    if req.method is 'POST'
+      if req.path is '/prospects' or req.path is '/prospects/:id'
+        config.params = JSON.stringify LeadJSON: req.body
+
     # headers are an object, so need to be deep merged
     config.headers =
       _.merge req.param('headers') or conf.headers or endpoints.defaults.headers
@@ -66,6 +71,9 @@ class DockMaster
       method: options.httpMethod
       path: "/DB2Web.asmx/#{options.soapMethod}JSON"
       headers: options.headers
+
+    console.log 'httpOptions', httpOptions
+    console.log 'params', options.params
 
     extReq = http.request httpOptions, createResponseHandler(req, res, next)
     extReq.on 'error', (e) ->
