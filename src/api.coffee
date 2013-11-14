@@ -30,5 +30,5 @@ app.use (req, res, next) ->
 _.keys(endpoints.routes).forEach (route) ->
   app.get route, dockMaster.config, dockMaster.request
 
-app.listen (port = process.env.PORT or 1338), ->
+app.listen (port = process.env.PORT or 1338), require('os').hostname(), ->
   console.log '%s listening at %s', app.get('name'), port
