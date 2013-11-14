@@ -72,9 +72,6 @@ class DockMaster
       path: "/DB2Web.asmx/#{options.soapMethod}JSON"
       headers: options.headers
 
-    console.log 'httpOptions', httpOptions
-    console.log 'params', options.params
-
     extReq = http.request httpOptions, createResponseHandler(req, res, next)
     extReq.on 'error', (e) ->
       console.error "ERROR EXTREQ: #{e.message}"
