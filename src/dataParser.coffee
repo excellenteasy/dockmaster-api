@@ -26,6 +26,12 @@ class DataParser
     if capture = data.match regex
       return new Error capture[1]
 
+    # capture responses sent when content-type was not x-www-form-urlencoded
+    regex = /<string xmlns="DBWC">(\{".+"\})<\/string>/
+    if capture = data.match regex
+      data = capture[1]
+      # the rest of the procedure can take it from here
+
     try
       data = JSON.parse data
     catch e
@@ -34,7 +40,7 @@ class DataParser
       return new Error "unable to parse initial response: "
 
     # We begin to untangle the mess that is returned by the API
-    data = data.d
+    data = data.d if data.d
     # If the response is empty, it will look something like '{"workorders":}'.
     # In that case, we need to return an empty object or array.
     if /^\{\"[a-zA-Z]+\"\:\}$/.test data
@@ -43,7 +49,7 @@ class DataParser
     # When the response does carry data, sometimes JSON.parse works, sometimes
     # not. Hence, we need try and if it fails continue untangling the
     # "custom JSON" (=invalid JSON) that was sent.
-    else
+    else if _.isString data
       try
         data = JSON.parse data
       catch e
@@ -52,7 +58,9 @@ class DataParser
         catch err
           data = new Error 'unable to parse the response'
 
-    # Now, we can unwrap the parsed data
-    unwrap data
+      # Now, we can unwrap the parsed data
+      unwrap data
+    else
+      return data
 
 module.exports = new DataParser

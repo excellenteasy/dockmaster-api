@@ -5,6 +5,7 @@ express = require 'express'
 dockMaster = require '../lib/dockMaster'
 _ = require 'lodash'
 endpoints = require '../lib/endpointsConfig'
+FormUrlEncode = require 'form-urlencoded'
 # END Dependencies
 
 # Prevent server from going down by unexpected errors
@@ -35,15 +36,28 @@ for route, conf of endpoints.routes
     app[method] route, dockMaster.config, dockMaster.request
 
 postNewLead = (req, res, next) ->
+  params = if _.isString req.body then JSON.parse req.body else req.body
+
+  if _.isObject params
+    params = webprospects: [webprospect: params]
+  else if _.isArray params
+    params = (webprospect: param for param in params)
+    params = webprospects: params
+  else
+    return console.error 'request body is malformed'
+  params = FormUrlEncode.encode LeadJSON: JSON.stringify params
+  console.log params
+
+  headers = _.merge req.param('headers') or endpoints.defaults.headers
+  headers['content-type'] = 'application/x-www-form-urlencoded'
 
   res.locals.config =
     hostname: req.param('hostname') or endpoints.defaults.hostname
     soapMethod: 'UpdateLeadRequest'
     httpMethod: 'POST'
     port: req.param('port') or endpoints.defaults.port
-    params: JSON.stringify
-      LeadJSON: req.body
-    headers: _.merge req.param('headers') or endpoints.defaults.headers
+    params: params
+    headers: headers
 
   next()
 
