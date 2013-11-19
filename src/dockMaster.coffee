@@ -48,8 +48,8 @@ class DockMaster
         config.params = JSON.stringify LeadJSON: req.body
 
     # headers are an object, so need to be deep merged
-    config.headers =
-      _.merge req.param('headers') or conf.headers or endpoints.defaults.headers
+    config.headers = _.cloneDeep(_.merge req.param('headers') or
+      conf.headers or endpoints.defaults.headers)
 
     res.locals.config = config
 

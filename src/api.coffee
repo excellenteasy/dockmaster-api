@@ -48,7 +48,8 @@ postNewLead = (req, res, next) ->
   params = FormUrlEncode.encode LeadJSON: JSON.stringify params
   console.log params
 
-  headers = _.merge req.param('headers') or endpoints.defaults.headers
+  headers = _.cloneDeep(_.merge req.param('headers') or
+    endpoints.defaults.headers)
   headers['content-type'] = 'application/x-www-form-urlencoded'
 
   res.locals.config =
