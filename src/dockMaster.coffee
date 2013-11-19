@@ -79,4 +79,57 @@ class DockMaster
     extReq.write options.params
     extReq.end()
 
+  postNewLead: (req, res, next) ->
+    console.log 'postNewLead'
+    options = res.locals.config
+
+    # add content-length header
+    if not _.isString options.headers['content-length']
+      if _.isNumber options.headers['content-length']
+        options.headers['content-length'] += ''
+      else
+        options.headers['content-length'] = options.params.length
+
+    httpOptions =
+      hostname: options.hostname
+      port: options.port
+      method: options.httpMethod
+      path: "/DB2Web.asmx/#{options.soapMethod}JSON"
+      headers: options.headers
+
+    extReq = http.request httpOptions, do (req, res, next) ->
+      console.log 'inside postNewLead response handler'
+      result = ''
+
+      (extRes) ->
+        extRes.setEncoding 'utf8'
+
+        extRes.on 'error', (e) ->
+          console.log "ERROR: #{e.message}"
+
+        extRes.on 'data', (chunk) ->
+          result += chunk
+
+        extRes.on 'end', ->
+          console.log 'inside postNewLead on end'
+          result = parser.parse result
+          # merge new id with existing object
+          console.log req.body
+          console.log 'req.body type', typeof req.body
+          result = _.merge result, req.body
+          if result instanceof Error
+            console.error 'PARSER ERR', result
+            res.statusCode = 500
+            res.write result.message
+            res.end()
+          else
+            res.write JSON.stringify result
+            res.statusCode = 200
+            res.end()
+    extReq.on 'error', (e) ->
+      console.error "ERROR EXTREQ: #{e.message}"
+      console.error e
+    extReq.write options.params
+    extReq.end()
+
 module.exports = new DockMaster

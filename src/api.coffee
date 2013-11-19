@@ -62,7 +62,7 @@ postNewLead = (req, res, next) ->
 
   next()
 
-app.post '/prospects', postNewLead, dockMaster.request
+app.post '/prospects', postNewLead, dockMaster.postNewLead
 
 app.listen (port = process.env.PORT or 1338), require('os').hostname(), ->
   console.log '%s listening at %s', app.get('name'), port
