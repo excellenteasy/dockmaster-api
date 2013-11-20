@@ -80,7 +80,6 @@ class DockMaster
     extReq.end()
 
   postNewLead: (req, res, next) ->
-    console.log 'postNewLead'
     options = res.locals.config
 
     # add content-length header
@@ -98,7 +97,6 @@ class DockMaster
       headers: options.headers
 
     extReq = http.request httpOptions, do (req, res, next) ->
-      console.log 'inside postNewLead response handler'
       result = ''
 
       (extRes) ->
@@ -111,11 +109,8 @@ class DockMaster
           result += chunk
 
         extRes.on 'end', ->
-          console.log 'inside postNewLead on end'
           result = parser.parse result
           # merge new id with existing object
-          console.log req.body
-          console.log 'req.body type', typeof req.body
           result = _.merge result, req.body
           if result instanceof Error
             console.error 'PARSER ERR', result

@@ -46,7 +46,6 @@ postNewLead = (req, res, next) ->
   else
     return console.error 'request body is malformed'
   params = FormUrlEncode.encode LeadJSON: JSON.stringify params
-  console.log params
 
   headers = _.cloneDeep(_.merge req.param('headers') or
     endpoints.defaults.headers)
