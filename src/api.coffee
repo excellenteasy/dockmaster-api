@@ -35,6 +35,7 @@ for route, conf of endpoints.routes
     method = method.toLowerCase()
     app[method] route, dockMaster.config, dockMaster.request
 
+# UpdateLeadRequest | POST /prospects
 postNewLead = (req, res, next) ->
   params = if _.isString req.body then JSON.parse req.body else req.body
 
@@ -62,6 +63,33 @@ postNewLead = (req, res, next) ->
   next()
 
 app.post '/prospects', postNewLead, dockMaster.postNewLead
+
+# SubmitTimeEntry | POST /timeEntries
+postNewTimeEntry = (req, res, next) ->
+  params = if _.isString req.body then JSON.parse req.body else req.body
+
+  if not _.isObject params
+    return console.error 'request body is malformed'
+  params = FormUrlEncode.encode RequestJSON: JSON.stringify params
+
+  headers = _.cloneDeep(_.merge req.param('headers') or
+    endpoints.defaults.headers)
+  headers['content-type'] = 'application/x-www-form-urlencoded'
+
+  res.locals.config =
+    hostname: req.param('hostname') or endpoints.defaults.hostname
+    soapMethod: 'SubmitTimeEntry'
+    httpMethod: 'POST'
+    port: req.param('port') or endpoints.defaults.port
+    params: params
+    headers: headers
+
+  next()
+
+app.post(
+  '/workorders/:id/operations/:opcode/timeEntries',
+  postNewTimeEntry,
+  dockMaster.postNewLead)
 
 app.listen (port = process.env.PORT or 1338), require('os').hostname(), ->
   console.log '%s listening at %s', app.get('name'), port
