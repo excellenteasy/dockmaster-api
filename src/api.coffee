@@ -12,7 +12,6 @@ FormUrlEncode = require 'form-urlencoded'
 process.on 'uncaughtException', (err) ->
   console.log '>>> uncaught exception !', err
   console.log err.stack
-  process.exit 1
 
 app = express()
 app.set 'name', 'DockMaster REST API'
