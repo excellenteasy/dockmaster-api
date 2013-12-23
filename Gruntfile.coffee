@@ -83,8 +83,7 @@ module.exports = (grunt) ->
     'coffeelint'
     'clean'
     'coffee'
-    'nodeunit'
   ]
   grunt.registerTask 'default', ['shell:hooks', '_build', 'watch']
-  grunt.registerTask 'test', ['coffee', 'nodeunit']
+  grunt.registerTask 'test', ['coffee']
   grunt.registerTask 'server', ['_build', 'shell:server']

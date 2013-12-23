@@ -44,6 +44,7 @@
     "coffee-script": "~1.6.3",
     "lodash": "~2.2.1",
     "express": "~3.4.4",
-    "form-urlencoded": "0.0.3"
+    "form-urlencoded": "0.0.3",
+    "dockmaster-sanitizer": "0.0.3"
   }
 }

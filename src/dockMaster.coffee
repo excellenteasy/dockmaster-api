@@ -1,34 +1,10 @@
 http   = require 'http'
 _      = require 'lodash'
-parser = require '../lib/dataParser'
+Sanitizer = require 'dockmaster-sanitizer'
 endpoints = require '../lib/endpointsConfig'
 
 # Deals with the DockMaster API
 class DockMaster
-  createResponseHandler = (req, res, next) ->
-    result = ''
-
-    (extRes) ->
-      extRes.setEncoding 'utf8'
-
-      extRes.on 'error', (e) ->
-        console.log "ERROR: #{e.message}"
-
-      extRes.on 'data', (chunk) ->
-        result += chunk
-
-      extRes.on 'end', ->
-        result = parser.parse result
-        if result instanceof Error
-          console.error 'PARSER ERR', result
-          res.statusCode = 500
-          res.write result.message
-          res.end()
-        else
-          res.write JSON.stringify result
-          res.statusCode = 200
-          res.end()
-
   # merges different configurations for the DockMaster request
   # Sources are req.params, endpoints.routes and endpoints[req.method]
   config: (req, res, next) ->
@@ -72,10 +48,13 @@ class DockMaster
       path: "/DB2Web.asmx/#{options.soapMethod}JSON"
       headers: options.headers
 
-    extReq = http.request httpOptions, createResponseHandler(req, res, next)
+    extReq = http.request httpOptions, (extRes) ->
+      extRes.pipe(new Sanitizer).pipe(res)
     extReq.on 'error', (e) ->
       console.error "ERROR EXTREQ: #{e.message}"
-      console.error e
+      res.status 500
+      res.write e.message
+      res.end()
     extReq.write options.params
     extReq.end()
 
@@ -109,11 +88,11 @@ class DockMaster
           result += chunk
 
         extRes.on 'end', ->
-          result = parser.parse result
+          result = (new Sanitizer)._parse result
           # merge new id with existing object
           result = _.merge result, req.body
           if result instanceof Error
-            console.error 'PARSER ERR', result
+            console.error 'sanitizer ERR', result
             res.statusCode = 500
             res.write result.message
             res.end()
