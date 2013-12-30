@@ -88,7 +88,7 @@ class DockMaster
           result += chunk
 
         extRes.on 'end', ->
-          result = (new Sanitizer)._parse result
+          result = (new Sanitizer)._sanitize result
           # merge new id with existing object
           result = _.merge result, req.body
           if result instanceof Error
