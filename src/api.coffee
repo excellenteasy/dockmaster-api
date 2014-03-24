@@ -90,5 +90,33 @@ app.post(
   postNewTimeEntry,
   dockMaster.postNewLead)
 
-app.listen (port = process.env.PORT or 1338), require('os').hostname(), ->
-  console.log '%s listening at %s', app.get('name'), port
+postNewPart = (req, res, next) ->
+  params = if _.isString req.body then JSON.parse req.body else req.body
+
+  if not _.isObject params
+    return console.error 'request body is malformed'
+  params = FormUrlEncode.encode RequestJSON: JSON.stringify params
+
+  headers = _.cloneDeep(_.merge req.param('headers') or
+    endpoints.defaults.headers)
+  headers['content-type'] = 'application/x-www-form-urlencoded'
+
+  res.locals.config =
+    hostname: req.param('hostname') or endpoints.defaults.hostname
+    soapMethod: 'SubmitWorkOrderPart'
+    httpMethod: 'POST'
+    port: req.param('port') or endpoints.defaults.port
+    params: params
+    headers: headers
+
+  next()
+
+app.post(
+  '/workorders/:id/operations/:opcode/parts',
+  postNewPart,
+  dockMaster.request
+  )
+
+host = require('os').hostname()
+app.listen (port = process.env.PORT or 1338), host, ->
+  console.log '%s listening at %s on %s', app.get('name'), port, host
