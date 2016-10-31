@@ -31,20 +31,20 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-watch": "~0.5.0",
-    "load-grunt-tasks": "~0.2.0",
-    "time-grunt": "~0.2.1",
-    "grunt-contrib-coffee": "~0.7.0",
-    "grunt-coffeelint": "0.0.7",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-shell": "~0.5.0"
+    "grunt-contrib-nodeunit": "~1.0.0",
+    "grunt-contrib-watch": "~1.0.0",
+    "load-grunt-tasks": "~3.5.2",
+    "time-grunt": "~1.4.0",
+    "grunt-contrib-coffee": "~1.0.0",
+    "grunt-coffeelint": "0.0.16",
+    "grunt-contrib-clean": "~1.0.0",
+    "grunt-shell": "~2.0.0"
   },
   "dependencies": {
-    "coffee-script": "~1.6.3",
-    "lodash": "~2.2.1",
-    "express": "~3.4.4",
-    "form-urlencoded": "0.0.3",
+    "coffee-script": "~1.11.1",
+    "lodash": "~4.16.5",
+    "express": "~4.14.0",
+    "form-urlencoded": "1.5.0",
     "dockmaster-sanitizer": "0.1.1"
   }
 }
